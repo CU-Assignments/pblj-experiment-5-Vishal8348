@@ -1,0 +1,62 @@
+import java.io.*;
+
+// Student class implementing Serializable
+class Student implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private int id;
+    private String name;
+    private double gpa;
+
+    public Student(int id, String name, double gpa) {
+        this.id = id;
+        this.name = name;
+        this.gpa = gpa;
+    }
+
+    public void display() {
+        System.out.println("Student ID: " + id);
+        System.out.println("Name: " + name);
+        System.out.println("GPA: " + gpa);
+    }
+}
+
+public class StudentSerialization {
+    private static final String FILE_NAME = "student.ser";
+
+    // Method to serialize the Student object
+    public static void serializeStudent(Student student) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            out.writeObject(student);
+            System.out.println("Student object serialized successfully.");
+        } catch (IOException e) {
+            System.err.println("IOException occurred: " + e.getMessage());
+        }
+    }
+
+    // Method to deserialize the Student object
+    public static Student deserializeStudent() {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            return (Student) in.readObject();
+        } catch (FileNotFoundException e) {
+            System.err.println("File not found: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("IOException occurred: " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Class not found: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        // Creating and serializing a Student object
+        Student student = new Student(101, "John Doe", 3.8);
+        serializeStudent(student);
+
+        // Deserializing and displaying Student object
+        Student deserializedStudent = deserializeStudent();
+        if (deserializedStudent != null) {
+            System.out.println("Deserialized Student Details:");
+            deserializedStudent.display();
+        }
+    }
+}
